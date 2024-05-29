@@ -1,0 +1,20 @@
+/* styles.css */
+body {
+    font-family: 'Arial, sans-serif';
+    background-color: #fff7f2;
+}
+
+h1 {
+    color: #790ddd;
+}
+
+.card-img-top {
+    max-height:40%;
+    max-width: 20%;
+    height: auto;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-style: normal;
+}

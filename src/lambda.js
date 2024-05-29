@@ -1,33 +1,45 @@
 const AWS = require('aws-sdk');
-const axios = require('axios');
+const xlsx = require('xlsx');
+
+const s3 = new AWS.S3();
 
 exports.handler = async (event) => {
     try {
-        // Parse the incoming event body to extract the feedback data
-        const feedbackData = JSON.parse(event.body);
-        console.log('Received feedback:', feedbackData);
+        // Parse the incoming event body to extract the feedback data        const feedbackData = JSON.parse(event.body);
 
-        // Save feedback data to AWS, for example, S3 bucket
-        const s3 = new AWS.S3();
+        // Create a new Excel workbook
+        const workbook = xlsx.utils.book_new();
+        const worksheet = xlsx.utils.json_to_sheet([feedbackData]);
+
+        // Add the worksheet to the workbook
+        xlsx.utils.book_append_sheet(workbook, worksheet, 'Feedback');
+
+        // Generate a buffer from the workbook
+        const buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+        // Define the S3 bucket and key (file name)
+        const bucketName = 'aws-feedback-bucket';
+        const key = `feedback_${Date.now()}.xlsx`;
+
+        // Upload the buffer to S3
         const params = {
-            Bucket: 'project4webapp', // Replace 'your-bucket-name' with your actual bucket name
-            Key: `feedback/${Date.now()}.json`, // You can customize the key based on your preference
-            Body: JSON.stringify(feedbackData),
-            ContentType: 'application/json'
+            Bucket: bucketName,
+            Key: key,
+            Body: buffer,
+            ContentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         };
 
-        // Upload the feedback data to S3
         await s3.upload(params).promise();
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ message: 'Feedback received successfully' })
+            body: JSON.stringify({ message: 'Feedback successfully saved' }),
         };
     } catch (error) {
         console.error('Error:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Internal server error' })
+            body: JSON.stringify({ message: 'Internal server error' }),
         };
     }
 };
