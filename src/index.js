@@ -62,13 +62,13 @@ const App = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('arn:aws:lambda:ap-southeast-2:211125640477:function:feedback', feedbackData);
+            const response = await axios.post('https://vzhdec3bqw3rakhf2u6mbp3kgu0dvcwz.lambda-url.ap-southeast-2.on.aws/', feedbackData);
             if (response.status === 200) {
                 alert('Feedback successfully saved');
-            } else {                                                                                                               
+            } else {
                 throw new Error('Failed to save feedback');
             }
-
+    
             // Reset feedback data after successful submission
             setFeedbackData({
                 name: '',
@@ -77,7 +77,7 @@ const App = () => {
                 rating: '1'
             });
         } catch (error) {
-            console.error('Error sending feedback data:', error);
+            console.error('Error sending feedback data:', error.response ? error.response.data : error.message);
         }
     };
 
