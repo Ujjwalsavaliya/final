@@ -1,4 +1,3 @@
-// ujjwal
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import axios from 'axios';
@@ -13,7 +12,7 @@ const App = () => {
         email: '',
         options: [],
         rating: '1'
-    }); 
+    });
 
     const API_KEY = 'NaKZK/rxLDzWVNbXHk3ABg==oPjpM3crayXZDxdF';
     const Airport_name = 'Townsville Airport';
@@ -47,7 +46,7 @@ const App = () => {
         };
 
         fetchAirportInfo();
-        fetchAirlineInfo();        
+        fetchAirlineInfo();
     }, []);
 
     const handleChange = (event) => {
@@ -63,13 +62,13 @@ const App = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('https://vzhdec3bqw3rakhf2u6mbp3kgu0dvcwz.lambda-url.ap-southeast-2.on.aws/', feedbackData);
+            const response = await axios.post('https://aws-feedback-bucket.s3.ap-southeast-2.amazonaws.com/feedback.xlsx', feedbackData);
             if (response.status === 200) {
                 alert('Feedback successfully saved');
             } else {
                 throw new Error('Failed to save feedback');
             }
-    
+
             // Reset feedback data after successful submission
             setFeedbackData({
                 name: '',
@@ -78,7 +77,7 @@ const App = () => {
                 rating: '1'
             });
         } catch (error) {
-            console.error('Error sending feedback data:', error.response ? error.response.data : error.message);
+            console.error('Error sending feedback data:', error);
         }
     };
 
