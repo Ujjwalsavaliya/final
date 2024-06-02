@@ -5,7 +5,8 @@ const s3 = new AWS.S3();
 
 exports.handler = async (event) => {
     try {
-        // Parse the incoming event body to extract the feedback data        const feedbackData = JSON.parse(event.body);
+        // Parse the incoming event body to extract the feedback data
+        const feedbackData = JSON.parse(event.body);
 
         // Create a new Excel workbook
         const workbook = xlsx.utils.book_new();
